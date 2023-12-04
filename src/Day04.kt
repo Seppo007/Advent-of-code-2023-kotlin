@@ -1,6 +1,6 @@
-class ScratchCard {
+class ScratchCard(scratchCardString: String) {
 
-    private val cardString: String
+    private val cardString: String = scratchCardString
     private val scratchNumbers: Set<Int>
     private val winningNumbers: Set<Int>
 
@@ -33,8 +33,7 @@ class ScratchCard {
         return points
     }
 
-    constructor(scratchCardString: String) {
-        cardString = scratchCardString
+    init {
         scratchNumbers = extractScratchNumbers()
         winningNumbers = extractWinningNumbers()
     }
