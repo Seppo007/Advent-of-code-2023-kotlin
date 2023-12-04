@@ -1,4 +1,4 @@
-class Scratcard {
+class ScratchCard {
 
     private val cardString: String
     private val scratchNumbers: Set<Int>
@@ -58,7 +58,7 @@ fun main() {
         var totalPoints = 0
 
         for (scratchCardString in input) {
-            val scratchCard = Scratcard(scratchCardString)
+            val scratchCard = ScratchCard(scratchCardString)
             totalPoints += scratchCard.getPoints()
         }
 
