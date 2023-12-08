@@ -52,9 +52,9 @@ class SeedManager(input: List<String>) {
 
     private fun extractSeeds(): List<Long> = input[0].split("seeds: ")[1].split(' ').map { it -> it.toLong() }
 
-    public fun getSeeds(): List<Long> = seedList
+    fun getSeeds(): List<Long> = seedList
 
-    public fun getLocationFor(seed: Long) =
+    fun getLocationFor(seed: Long) =
         getMappingResultFromListFor(
             getMappingResultFromListFor(
                 getMappingResultFromListFor(
@@ -105,8 +105,6 @@ class SeedManager(input: List<String>) {
             "humidity-to-location map:", "",
             humidityToLocationMappingsList
         )
-
-        println("initialized all mappings")
     }
 
     companion object {
@@ -128,13 +126,10 @@ fun main() {
         val seeds = seedManager.getSeeds()
         val locations = mutableSetOf<Long>()
 
-        println("seeds are $seeds")
-
         for (seed in seeds) {
             locations.add(seedManager.getLocationFor(seed))
         }
 
-        println("locations are $locations")
         return locations.min()
     }
 
@@ -144,7 +139,7 @@ fun main() {
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day05_test")
-    // check(part1(testInput) == 35)
+    check(part1(testInput) == 35L)
 
     val input = readInput("Day05")
     part1(input).println()
