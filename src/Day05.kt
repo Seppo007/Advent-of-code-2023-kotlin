@@ -25,7 +25,7 @@ class Mapping(mappingString: String) {
 
 }
 
-class SeedManager(input: List<String>) {
+class SeedManager(input: List<String>, seedList: List<Long> = mutableListOf() ) {
 
     private var input: List<String> = mutableListOf()
     private var seedList: List<Long> = mutableListOf()
@@ -75,7 +75,11 @@ class SeedManager(input: List<String>) {
 
     init {
         this.input = input
-        seedList = extractSeeds()
+        if(seedList.isNotEmpty()) {
+            this.seedList = seedList
+        } else {
+            this.seedList = extractSeeds()
+        }
 
         initializeXToYMappingFor(
             "seed-to-soil map:", "soil-to-fertilizer map:",
@@ -115,6 +119,39 @@ class SeedManager(input: List<String>) {
         val lightToTempMappingsList: MutableList<Mapping> = mutableListOf()
         val tempToHumidityMappingsList: MutableList<Mapping> = mutableListOf()
         val humidityToLocationMappingsList: MutableList<Mapping> = mutableListOf()
+
+        fun generateSeedListFromSeedsWithRanges(seedRangeString: String): List<Long> {
+            println("Got seedRangeString $seedRangeString")
+            val seedRangeEntries = seedRangeString.split(" ")
+
+            val seedEntries: MutableList<Long> = mutableListOf()
+            val rangeEntries: MutableList<Long> = mutableListOf()
+
+            for(i in 0..seedRangeEntries.size - 1) {
+                if(i%2 == 0) {
+                    seedEntries.add(seedRangeEntries[i].toLong())
+                } else {
+                    rangeEntries.add(seedRangeEntries[i].toLong())
+                }
+            }
+
+            println("seeds: $seedEntries")
+            println("ranges: $rangeEntries")
+
+            val seedList: MutableList<Long> = mutableListOf()
+            /*for(seedEntryIndex in 0..seedEntries.size - 1){
+                for(i in 0..rangeEntries[seedEntryIndex]) {
+                    seedList.add(seedEntries[seedEntryIndex] + i)
+                }
+            }*/
+
+            for(i in 0..rangeEntries[1]) {
+                seedList.add(seedEntries[1] + i)
+            }
+
+            println("seed list completed")
+            return seedList
+        }
     }
 
 }
@@ -134,14 +171,27 @@ fun main() {
     }
 
     fun part2(input: List<String>): Long {
-        return input.size.toLong()
+
+        val seedsRangeString = input[0].split(": ")[1]
+
+        val seedManager = SeedManager(input, SeedManager.generateSeedListFromSeedsWithRanges(seedsRangeString))
+        val seeds = seedManager.getSeeds()
+        val locations = mutableSetOf<Long>()
+
+        // Do the min calculation per seed + range pair and in the end get the lowest of them (else creating all those possible seeds is too much for the heap)
+        for (seed in seeds) {
+            locations.add(seedManager.getLocationFor(seed))
+        }
+
+        return locations.min()
     }
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day05_test")
     check(part1(testInput) == 35L)
+    // check(part2(testInput) == 46L)
 
     val input = readInput("Day05")
     part1(input).println()
-    // part2(input).prLongln()
+    part2(input).println()
 }
