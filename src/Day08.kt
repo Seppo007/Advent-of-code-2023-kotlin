@@ -1,4 +1,4 @@
-import java.util.Dictionary
+import java.time.LocalDateTime
 
 class Navigation(input: String) {
     val left: String
@@ -29,7 +29,7 @@ fun createPathDictionary(input: List<String>): Map<String, Navigation> {
 
 fun printDictionary(dictionary: Map<String, Navigation>) {
     println("dictionary:")
-    for(entry in dictionary) {
+    for (entry in dictionary) {
         val value = dictionary[entry.key]!!
         println("${entry.key} -> (${value.left}, ${value.right})")
     }
@@ -43,8 +43,8 @@ fun main() {
         var cur = "AAA"
         var steps = 0
         do {
-            for(direction in directionList) {
-                if(direction == 'L') {
+            for (direction in directionList) {
+                if (direction == 'L') {
                     cur = pathDictionary[cur]!!.left
                 } else {
                     cur = pathDictionary[cur]!!.right
@@ -56,8 +56,34 @@ fun main() {
         return steps
     }
 
-    fun part2(input: List<String>): Int {
-        return input.size
+    fun part2(input: List<String>): Long {
+        val directionList = input[0]
+        val pathDictionary = createPathDictionary(input.subList(2, input.size))
+        println("startTime: ${LocalDateTime.now()}")
+
+        val currents = pathDictionary.keys.filter { it -> it.endsWith('A') }.toMutableList()
+        var steps = 0L
+        do {
+            for (direction in directionList) {
+                for ((index, cur) in currents.withIndex()) {
+                    if (direction == 'L') {
+                        currents[index] = pathDictionary[cur]!!.left
+                    } else {
+                        currents[index] = pathDictionary[cur]!!.right
+                    }
+                    steps += 1L
+                }
+                if (currents.all { it -> it.endsWith('Z') }) {
+                    return steps
+                }
+            }
+        } while (currents.any { !it.endsWith('Z') } or (steps > 16000000000000L))
+        // 16000000000000L
+        // 15299095336639
+        println("endTime: ${LocalDateTime.now()}")
+
+
+        return steps
     }
 
     // test if implementation meets criteria from the description, like:
